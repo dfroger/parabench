@@ -1,2 +1,5 @@
 parabench.egg-info/
 __pycache__/
+*.o
+*.a
+example.x
