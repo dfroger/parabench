@@ -1,12 +1,16 @@
-EXE = example.x
+EXE = sleep.x
 INCLUDES = -I$(CONDA_ENV_PATH)/include
 LDFLAGS = -L$(CONDA_ENV_PATH)/lib -lparabench
 
 %.o: %.c
 	gcc -g -c $< $(INCLUDES)
 
-$(EXE): example.o
+$(EXE): sleep.o
 	mpicc -g -o $@ $^ $(LDFLAGS) 
 
+bench: $(EXE)
+	parabench bench -s 1000 -o csv $(EXE)
+	parabench plot csv/*.csv
+
 clean:
-	rm -f $(EXE) *.o time*.txt
+	rm -rf $(EXE) *.o csv/ times.png

@@ -1,3 +1,0 @@
-Run example:
-
-    parabench 
