@@ -4,25 +4,32 @@
 #include <stdbool.h>
 
 typedef struct {
-    int mpi_rank;
-    const char* name;
-    double start_time;
-    double stop_time;
-    double duration;
-} ParabenchStopwatch;
+    char** names;
+    double* start_times;
+    double* stop_times;
+    double* durations;
+} prb_stopwatch_t;
 
 bool
-parabench_parse_command_line(int argc, char** argv,
-                             long* problem_size, bool* debug_mode);
+prb_parse_command_line(int argc, char** argv,
+                       long* problem_size, bool* debug_mode,
+                       char** output_filepath);
+
+prb_stopwatch_t*
+prb_stopwatch_new(int noperations);
+
+void
+prb_stopwatch_free(prb_stopwatch_t* sw);
 
 bool
-parabench_start(ParabenchStopwatch* sw);
+prb_stopwatch_start(prb_stopwatch_t* sw, int operation);
 
 bool
-parabench_stop(ParabenchStopwatch* sw);
+prb_stopwatch_stop(prb_stopwatch_t* sw, int operation);
 
-
-bool
-parabench_report(ParabenchStopwatch* sw);
+void
+prb_stopwatch_write_csv(prb_stopwatch_t* sw, const char* filepath,
+                        int noperations, char** operation_names,
+                        MPI_Comm comm, int mpi_master);
 
 #endif
