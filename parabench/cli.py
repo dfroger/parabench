@@ -2,12 +2,17 @@ import argparse
 from pathlib import Path
 
 from .bench import run_benchmark
-from .plot import plot_benchmark
+from .reader import read_files
 
 def bench_func(args):
     nproc_list = [int(nproc) for nproc in args.nproc_list.split(',')]
     run_benchmark(args.executable, args.problem_size, args.debug, 
                   nproc_list, args.output_directory, args.dry_run)
+
+def plot_func(args):
+    dataframes = read_files(args.csv_files)
+    from .plot import plot_benchmark
+    plot_benchmark(dataframes, args.output_filename)
 
 def parse_command_line():
     parser = argparse.ArgumentParser()
@@ -16,7 +21,8 @@ def parse_command_line():
 
     # Bench
     bench = subparsers.add_parser('bench', help='Run benchmark')
-    bench.add_argument('executable', type=Path, help='Executable to run benchmark on')
+    bench.add_argument('executable', type=Path,
+                       help='Executable to run benchmark on')
     bench.add_argument('-g', '--debug', action='store_true',
                      help='Run executable in debug mode (performance penality)')
     bench.add_argument('-s', '--problem-size', type=int, default=10000,
@@ -35,7 +41,11 @@ def parse_command_line():
 
     # Plot
     plot = subparsers.add_parser('plot', help='Plot benchmark')
-    plot.set_defaults(func=plot_benchmark)
+    plot.add_argument('-o', '--output-filename', default='times.png',
+                     help='Image file name.')
+    plot.add_argument('csv_files', type=Path, nargs='+', 
+                      help='CSV files containing time measures')
+    plot.set_defaults(func=plot_func)
 
     args = parser.parse_args()
 

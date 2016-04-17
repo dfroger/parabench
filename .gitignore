@@ -3,3 +3,6 @@ __pycache__/
 *.o
 *.a
 example.x
+
+*.png
+out/

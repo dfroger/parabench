@@ -4,7 +4,7 @@ import subprocess
 import shlex
 from distutils.spawn import find_executable
 
-def mpirun(mpirun_exe, exe_with_args, nproc, output_file, dry_run):
+def mpirun(mpirun_exe, exe_with_args, nproc, dry_run):
     """Run cmd in parallel and write stdout to file"""
 
     template = textwrap.dedent('''
@@ -18,12 +18,8 @@ def mpirun(mpirun_exe, exe_with_args, nproc, output_file, dry_run):
         nproc = nproc,
         exe_with_args = exe_with_args)
 
-    print(cmd + ' > ' + str(output_file))
+    print(cmd)
 
     args = shlex.split(cmd)
     if not dry_run:
-        result = subprocess.run(args, stdout=subprocess.PIPE,
-                                universal_newlines=True)
-        with output_file.open('w') as f:
-            f.write(result.stdout)
-    print(output_file)
+        result = subprocess.run(args)

@@ -4,6 +4,8 @@ from distutils.spawn import find_executable
 
 from .mpirun import mpirun
 
+CMD = '{exepath} {problem_size} {debug_int} {output_file}'
+
 def run_benchmark(executable, problem_size, debug, nproc_list, output_dir,
                   dry_run):
     exepath = find_executable(str(executable))
@@ -18,14 +20,13 @@ def run_benchmark(executable, problem_size, debug, nproc_list, output_dir,
     if not dry_run:
         output_dir.mkdir(exist_ok=True)
 
-    exe_with_args = '{exepath} {problem_size} {debug_int}'.format(
-        exepath = exepath,
-        problem_size = problem_size,
-        debug_int = 1 if debug else 0)
-
     for nproc in nproc_list:
-        output_file = output_dir / 'times-{executable}-{nproc}.txt'.format(
+        output_file = output_dir / 'times-{executable}-{nproc}.csv'.format(
             executable = executable.stem,
             nproc = nproc)
-        mpirun(mpirun_executable, exe_with_args, nproc,
-               output_file, dry_run)
+        exe_with_args = CMD.format(
+            exepath = exepath,
+            problem_size = problem_size,
+            debug_int = 1 if debug else 0,
+            output_file = output_file)
+        mpirun(mpirun_executable, exe_with_args, nproc, dry_run)
