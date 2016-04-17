@@ -1,7 +1,6 @@
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import pandas as pd
 
 def plot_benchmark(dataframes, filename):
     figure, axes = plt.subplots(len(dataframes), 1, sharex='col')

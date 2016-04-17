@@ -15,6 +15,10 @@ prb_parse_command_line(int argc, char** argv,
                        long* problem_size, bool* debug_mode,
                        char** output_filepath);
 
+void
+prb_partition_index(int mpi_size, int mpi_rank,
+                    size_t problem_size, size_t* i0, size_t* i1);
+
 prb_stopwatch_t*
 prb_stopwatch_new(int noperations);
 

@@ -69,6 +69,14 @@ prb_parse_command_line(int argc, char** argv,
     return true;
 }
 
+void
+prb_partition_index(int mpi_size, int mpi_rank,
+                    size_t problem_size, size_t* i0, size_t* i1)
+{
+    *i0 = problem_size *  mpi_rank / mpi_size;
+    *i1 = problem_size * (mpi_rank+1) / mpi_size;
+}
+
 prb_stopwatch_t*
 prb_stopwatch_new(int noperations)
 {

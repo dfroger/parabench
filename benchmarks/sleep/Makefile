@@ -1,15 +1,18 @@
 EXE = sleep.x
-INCLUDES = -I$(CONDA_ENV_PATH)/include
-LDFLAGS = -L$(CONDA_ENV_PATH)/lib -lparabench
+CC = mpicc
+
+all: $(EXE)
+
+FLAGS = -g -O3 -Wall -Wextra
 
 %.o: %.c
-	gcc -g -c $< $(INCLUDES)
+	$(CC) $(FLAGS) -c $<
 
 $(EXE): sleep.o
-	mpicc -g -o $@ $^ $(LDFLAGS) 
+	$(CC) $(FLAGS) -o $@ $^ -lparabench
 
 bench: $(EXE)
-	parabench bench -s 1000 -o csv $(EXE)
+	parabench bench -s 1000 -o csv/ $(EXE)
 	parabench plot csv/*.csv
 
 clean:
