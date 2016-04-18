@@ -1,13 +1,29 @@
+import sys
 import argparse
 from pathlib import Path
 
 from .bench import run_benchmark
 from .reader import read_files
+from .schedulers import oar
+from . import conda
+from . import localrun
 
 def bench_func(args):
-    nproc_list = [int(nproc) for nproc in args.nproc_list.split(',')]
-    run_benchmark(args.executable, args.problem_size, args.debug, 
-                  nproc_list, args.output_directory, args.dry_run)
+    if args.conda_environment:
+        conda.activate_environment(args.conda_environment)
+
+    if args.oar and not args.job_scheduled:
+        oar.submit(sys.argv, args.dry_run, preserve_conda_env=True)
+
+    else:
+        if args.oar:
+            mpirun_func = oar.mpirun
+        else:
+            mpirun_func = localrun.mpirun
+        nproc_list = [int(nproc) for nproc in args.nproc_list.split(',')]
+        run_benchmark(mpirun_func, args.executable, args.problem_size,
+                      args.debug, nproc_list, args.output_directory,
+                      args.dry_run)
 
 def plot_func(args):
     dataframes = read_files(args.csv_files)
@@ -36,7 +52,9 @@ def parse_command_line():
     bench.add_argument('-o', '--output-directory', default='.', type=Path,
                      help='Directory to store stdout.')
     bench.add_argument('-d', '--dry-run', action='store_true',
-                       help='Print what would have been done')
+                       help='Print what shoud be run')
+    bench.add_argument('--oar', action='store_true',
+                        help='Submit run with OAR scheduler')
     bench.set_defaults(func=bench_func)
 
     # Plot

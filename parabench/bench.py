@@ -2,11 +2,9 @@ import os
 
 from distutils.spawn import find_executable
 
-from .mpirun import mpirun
-
 CMD = '{exepath} {problem_size} {debug_int} {output_file}'
 
-def run_benchmark(executable, problem_size, debug, nproc_list, output_dir,
+def run_benchmark(mpirun_func, executable, problem_size, debug, nproc_list, output_dir,
                   dry_run):
     exepath = find_executable(str(executable))
     if not exepath:
@@ -29,4 +27,4 @@ def run_benchmark(executable, problem_size, debug, nproc_list, output_dir,
             problem_size = problem_size,
             debug_int = 1 if debug else 0,
             output_file = output_file)
-        mpirun(mpirun_executable, exe_with_args, nproc, dry_run)
+        mpirun_func(mpirun_executable, exe_with_args, nproc, dry_run)

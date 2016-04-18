@@ -1,5 +1,7 @@
 import json
 from pathlib import Path
+import subprocess
+import os
 
 def get_conda_environments():
     args = 'conda info --json'.split()
@@ -13,12 +15,9 @@ def get_conda_environments():
     active_env_path = Path(json_data['default_prefix'])
     return env_paths, active_env_path
 
-
-    if args.conda_environment:
-        env_paths, activate_env_path = get_conda_environments()
-        paths = os.getenv('PATH').split(':')
-        new_path = env_paths[args.conda_environment] / 'bin'
-        paths.insert(0, str(new_path))
-        os.environ['PATH'] = ':'.join(paths)
-        print('modified path', paths)
-
+def activate_environment(name):
+    env_paths, activate_env_path = get_conda_environments()
+    paths = os.getenv('PATH').split(':')
+    new_path = env_paths[name] / 'bin'
+    paths.insert(0, str(new_path))
+    os.environ['PATH'] = ':'.join(paths)

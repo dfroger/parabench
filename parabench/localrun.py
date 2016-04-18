@@ -4,16 +4,16 @@ import subprocess
 import shlex
 from distutils.spawn import find_executable
 
+MPIRUN_TEMPLATE = '''
+{mpirun_exe} 
+    -n {nproc}
+    {exe_with_args}
+'''
+
 def mpirun(mpirun_exe, exe_with_args, nproc, dry_run):
     """Run cmd in parallel and write stdout to file"""
 
-    template = textwrap.dedent('''
-    {mpirun_exe} 
-        -n {nproc}
-        {exe_with_args}
-    ''').strip()
-
-    cmd = template.format(
+    cmd = MPIRUN_TEMPLATE.format(
         mpirun_exe = mpirun_exe,
         nproc = nproc,
         exe_with_args = exe_with_args)
