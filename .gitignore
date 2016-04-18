@@ -1,8 +1,17 @@
+.*.swp
+
 parabench.egg-info/
 __pycache__/
+
 *.o
 *.a
 *.x
 
 *.png
+*.bin
+
 out/
+csv/
+
+OAR.*.stdout
+OAR.*.stderr

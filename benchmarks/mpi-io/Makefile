@@ -1,5 +1,6 @@
 EXE = write.x read.x
 CC = mpicc
+BENCH_FLAGS = '--oar'
 
 all: $(EXE)
 
@@ -15,8 +16,10 @@ write.x: write.o tool.o
 	$(CC) $(FLAGS) -o $@ $^ -lparabench
 
 bench: $(EXE)
-	parabench bench -s 10000 -o csv/ write.x
-	parabench bench -s 10000 -o csv/ read.x
+	parabench bench $(BENCH_FLAGS) -s 10000 -o csv/ write.x
+	parabench bench $(BENCH_FLAGS) -s 10000 -o csv/ read.x
+
+plot:
 	parabench plot csv/times-write-*.csv -o times-write.png
 	parabench plot csv/times-read-*.csv -o times-read.png
 
